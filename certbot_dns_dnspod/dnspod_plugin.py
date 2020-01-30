@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Example Certbot plugins.
 For full examples, see `certbot.plugins`.
 """
@@ -192,7 +193,7 @@ class _DNSPodClient(object):
             action
         )
 
-    def _do_post(self, url, data: dict) -> dict:
+    def _do_post(self, url, data) -> dict:
         if not data:
             data = {}
 
