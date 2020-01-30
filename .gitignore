@@ -1,0 +1,7 @@
+dnspod-credentials.ini
+__pycache__
+.vscode
+.python-version
+build
+dist
+*.egg-info
