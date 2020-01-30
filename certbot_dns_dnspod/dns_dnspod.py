@@ -193,7 +193,7 @@ class _DNSPodClient(object):
             action
         )
 
-    def _do_post(self, url, data) -> dict:
+    def _do_post(self, url, data):
         if not data:
             data = {}
 
