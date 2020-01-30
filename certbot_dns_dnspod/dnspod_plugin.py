@@ -64,13 +64,13 @@ class _DNSPodClient(object):
 
     USER_AGENT_FMT = 'certbot-dns-dnspod/0.0.1({email})'
 
-    def __init__(self, api_token: str, ttl: int, contact_email: str):
+    def __init__(self, api_token, ttl, contact_email):
         self.api_token = api_token
         self.ttl = ttl
         self.contact_email = contact_email
         self.user_agent = self.USER_AGENT_FMT.format(email=contact_email)
 
-    def add_txt_record(self, domain: str, record_name: str, record_content: str):
+    def add_txt_record(self, domain, record_name, record_content):
         """Add TXT record"""
         org_record = self._get_txt_record_info_if_exists(domain, record_name)
 
@@ -81,7 +81,7 @@ class _DNSPodClient(object):
         else:
             self._create_txt_record(domain, record_name, record_content)
 
-    def del_txt_record(self, domain: str, record_name: str, record_content: str):
+    def del_txt_record(self, domain, record_name, record_content):
         """Delete TXT record"""
 
         org_record = self._get_txt_record_info_if_exists(domain, record_name)
@@ -90,7 +90,7 @@ class _DNSPodClient(object):
             if org_record['value'] == record_content:
                 self._remove_record(domain, org_record['id'], record_name)
 
-    def _create_txt_record(self, domain: str, record_name: str, record_content: str):
+    def _create_txt_record(self, domain, record_name, record_content):
         """Create TXT record"""
         data = {
             'domain': domain,
@@ -111,8 +111,8 @@ class _DNSPodClient(object):
 
         return True
 
-    def _modify_txt_record(self, domain: str, record_id: str,
-                           record_name: str, record_content: str):
+    def _modify_txt_record(self, domain, record_id,
+                           record_name, record_content):
         """Modify TXT record"""
         data = {
             'domain': domain,
@@ -133,7 +133,7 @@ class _DNSPodClient(object):
 
         return True
 
-    def _get_domain_info(self, domain: str):
+    def _get_domain_info(self, domain):
         data = {
             'domain': domain
         }
@@ -169,7 +169,7 @@ class _DNSPodClient(object):
         if records:
             return records[0]
 
-    def _remove_record(self, domain: str, record_id: str, record_name: str):
+    def _remove_record(self, domain, record_id, record_name):
         """Remove record"""
         data = {
             'domain': domain,
@@ -187,12 +187,12 @@ class _DNSPodClient(object):
 
         return True
 
-    def _get_url(self, action: str):
+    def _get_url(self, action):
         return 'https://dnsapi.cn/{0}'.format(
             action
         )
 
-    def _do_post(self, url: str, data: dict) -> dict:
+    def _do_post(self, url, data: dict) -> dict:
         if not data:
             data = {}
 
