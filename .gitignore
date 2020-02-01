@@ -1,7 +1,14 @@
 dnspod-credentials.ini
-__pycache__
+
 .vscode
+
+__pycache__
 .python-version
 build
 dist
+htmlcov
 *.egg-info
+
+.DS_Store
+.coverage
+

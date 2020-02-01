@@ -1,0 +1,6 @@
+certbot>=0.34.0
+requests
+pytest
+pytest-cov
+mock
+responses
