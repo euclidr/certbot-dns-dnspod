@@ -1,7 +1,7 @@
 from os import path
 from setuptools import setup, find_packages
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Enzo Yang"
 __author_email__ = "divisoryang@gmail.com"
 __url__ = "https://github.com/euclidr/certbot-dns-dnspod"
