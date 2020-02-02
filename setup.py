@@ -13,15 +13,20 @@ with open(path.join(this_directory, "requirements.txt")) as f:
     for line in f:
         install_requires.append(line.strip())
 
-
 with open(path.join(this_directory, "tests/requirements.txt")) as f:
     tests_requires = []
     for line in f:
         tests_requires.append(line.strip())
 
+with open(path.join(this_directory, "README.md")) as f:
+    long_description = f.read()
+
 setup(
     name='certbot-dns-dnspod',
     packages=find_packages(),
+    description='dnspod authenticator plugin for certbot',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     version=__version__,
     author=__author__,
     author_email=__author_email__,
@@ -55,5 +60,6 @@ setup(
             'dns-dnspod = certbot_dns_dnspod.dns_dnspod:Authenticator',
         ],
     },
+    include_package_data=True,
     # test_suite='tests',
 )

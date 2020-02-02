@@ -4,10 +4,12 @@ dnspod-credentials.ini
 
 __pycache__
 .python-version
+*.pyc
 build
 dist
 htmlcov
 *.egg-info
+.tox
 
 .DS_Store
 .coverage

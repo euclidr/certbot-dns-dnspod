@@ -4,14 +4,17 @@
 import logging
 import requests
 
-from acme.magic_typing import Dict
-from acme.magic_typing import Any
+# from acme.magic_typing import Dict
+# from acme.magic_typing import Any
 
 from certbot import errors
 
 from . import __version__
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)  # pylint: disable=C0103
+
+
+NO_RECORD_CODE = '10'
 
 
 class DNSPodClient(object):
@@ -21,8 +24,11 @@ class DNSPodClient(object):
     def __init__(self, api_token, ttl, contact_email):
         """Init DNSPodClient
 
-        :param str api_token: API token used for authentication, see: https://support.dnspod.cn/Kb/showarticle/tsid/227/
-        :param int ttl: DNS ttl, DNSPod limits ttl ranges for different VIP types, If you are free user, the ttl must not be less than 600.
+        :param str api_token: API token used for authentication,
+            see: https://support.dnspod.cn/Kb/showarticle/tsid/227/
+        :param int ttl: DNS ttl, DNSPod limits ttl ranges for different
+            VIP types, If you are free user,
+            the ttl must not be less than 600.
         :param str contact_email: Contact email used to request DNSPod API
         """
         self.api_token = api_token
@@ -85,8 +91,10 @@ class DNSPodClient(object):
 
         err_code = result['status']['code']
         if err_code != '1':
-            raise errors.PluginError('[DNSPod] Create TXT record failed, domain: {0}, err_code: {1}, err_msg: {2}'.format(
-                full_domain, err_code, result['status']['message']))
+            raise errors.PluginError(
+                '[DNSPod] Create TXT record failed,'
+                'domain: {0}, err_code: {1}, err_msg: {2}'.format(
+                    full_domain, err_code, result['status']['message']))
 
         return True
 
@@ -113,8 +121,10 @@ class DNSPodClient(object):
 
         err_code = result['status']['code']
         if err_code != '1':
-            raise errors.PluginError('[DNSPod] Modify TXT record failed, domain: {0}, err_code: {1}, err_msg: {2}'.format(
-                full_domain, err_code, result['status']['message']))
+            raise errors.PluginError(
+                '[DNSPod] Modify TXT record failed, domain:'
+                ' {0}, err_code: {1}, err_msg: {2}'.format(
+                    full_domain, err_code, result['status']['message']))
 
     def _get_txt_record_info_if_exists(self, full_domain):
         """
@@ -125,7 +135,6 @@ class DNSPodClient(object):
         :rtype: Optional[Dict[str, Any]]
         :raises errors.PluginError: If the API returns error.
         """
-        NO_RECORD_CODE = '10'
 
         sub_domain, base_domain = self._split_full_domain(full_domain)
 
@@ -142,8 +151,10 @@ class DNSPodClient(object):
             return None
         elif err_code != '1':
             full_domain = '{0}.{1}'.format(sub_domain, base_domain)
-            raise errors.PluginError('[DNSPod] Get TXT record info failed, domain: {0}, err_code: {1}, err_msg: {2}'.format(
-                full_domain, err_code, result['status']['message']))
+            raise errors.PluginError(
+                '[DNSPod] Get TXT record info failed, domain: {0},'
+                ' err_code: {1}, err_msg: {2}'.format(
+                    full_domain, err_code, result['status']['message']))
 
         records = result.get('records') or []
         if records:
@@ -169,14 +180,17 @@ class DNSPodClient(object):
 
         err_code = result['status']['code']
         if err_code != '1':
-            logger.error('[DNSPod] Remove record failed, domain: {0}, err_code: {1}, err_msg: {2}'.format(
-                full_domain, err_code, result['status']['message']
-            ))
+            logger.error(
+                '[DNSPod] Remove record failed, domain: {0}, '
+                'err_code: {1}, err_msg: {2}'.format(
+                    full_domain, err_code, result['status']['message']
+                ))
             return False
 
         return True
 
-    def _get_url(self, action):
+    @staticmethod
+    def _get_url(action):
         """
         Get API URL from action
 
@@ -215,14 +229,16 @@ class DNSPodClient(object):
 
         resp = requests.post(url, data=data, headers=headers)
         if resp.status_code != 200:
-            raise errors.PluginError('[DNSPod] HTTP Error, status_code: {0}, url: {1}'.format(
-                resp.status_code, url))
+            raise errors.PluginError(
+                '[DNSPod] HTTP Error, status_code: {0}, url: {1}'
+                .format(resp.status_code, url))
 
         try:
             result = resp.json()
         except Exception:
-            raise errors.PluginError('[DNSPod] API response with non JSON, url: {0}, content: {1}'.format(
-                url, resp.text))
+            raise errors.PluginError(
+                '[DNSPod] API response with non JSON, url: {0}, content: {1}'
+                .format(url, resp.text))
 
         return result
 
@@ -244,8 +260,9 @@ class DNSPodClient(object):
             sub_domain = '@'
             domain, tld = parts
         else:
-            raise errors.PluginError('[DNSPod] Unable to split full domain: {0}'.format(
-                full_domain))
+            raise errors.PluginError(
+                '[DNSPod] Unable to split full domain: {0}'
+                .format(full_domain))
 
         base_domain = '{0}.{1}'.format(domain, tld)
 

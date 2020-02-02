@@ -69,11 +69,13 @@ def parse_resp_data(encoded_str):
 @responses.activate
 def test_add_txt_record_create(dnspod):
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.Create',
+        responses.POST,
+        'https://dnsapi.cn/Record.Create',
         json={'status': {'code': '1'}}
     )
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.List',
+        responses.POST,
+        'https://dnsapi.cn/Record.List',
         json={
             'status': {'code': '10'},
         }
@@ -97,10 +99,12 @@ def test_add_txt_record_create(dnspod):
     })
 
     assert len(responses.calls) == 2
-    assert (parse_resp_data(responses.calls[0].request.body)
-            == expected_list_params)
-    assert (parse_resp_data(responses.calls[1].request.body)
-            == expected_create_params)
+
+    list_params = parse_resp_data(responses.calls[0].request.body)
+    assert list_params == expected_list_params
+
+    create_params = parse_resp_data(responses.calls[1].request.body)
+    assert create_params == expected_create_params
 
 
 @responses.activate
@@ -108,12 +112,14 @@ def test_add_txt_record_modify(dnspod):
     RECORD_VALUE2 = 'record_value2'
 
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.List',
+        responses.POST,
+        'https://dnsapi.cn/Record.List',
         json=list_record_result(RECORD_ID, RECORD_VALUE2)
     )
 
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.Modify',
+        responses.POST,
+        'https://dnsapi.cn/Record.Modify',
         json={
             'status': {'code': '1'}
         }
@@ -137,16 +143,19 @@ def test_add_txt_record_modify(dnspod):
     })
 
     assert len(responses.calls) == 2
-    assert (parse_resp_data(responses.calls[0].request.body)
-            == expected_list_params)
-    assert (parse_resp_data(responses.calls[1].request.body)
-            == expected_modify_params)
+
+    list_params = parse_resp_data(responses.calls[0].request.body)
+    assert list_params == expected_list_params
+
+    modify_params = parse_resp_data(responses.calls[1].request.body)
+    assert modify_params == expected_modify_params
 
 
 @responses.activate
 def test_add_txt_record_dup_modify(dnspod):
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.List',
+        responses.POST,
+        'https://dnsapi.cn/Record.List',
         json=list_record_result(RECORD_ID, RECORD_VALUE)
     )
 
@@ -159,19 +168,22 @@ def test_add_txt_record_dup_modify(dnspod):
     })
 
     assert len(responses.calls) == 1
-    assert (parse_resp_data(responses.calls[0].request.body)
-            == expected_list_params)
+
+    list_params = parse_resp_data(responses.calls[0].request.body)
+    assert list_params == expected_list_params
 
 
 @responses.activate
 def test_del_txt_record(dnspod):
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.List',
+        responses.POST,
+        'https://dnsapi.cn/Record.List',
         json=list_record_result(RECORD_ID, RECORD_VALUE)
     )
 
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.Remove',
+        responses.POST,
+        'https://dnsapi.cn/Record.Remove',
         json={'status': {'code': '1'}}
     )
 
@@ -189,10 +201,12 @@ def test_del_txt_record(dnspod):
     })
 
     assert len(responses.calls) == 2
-    assert (parse_resp_data(responses.calls[0].request.body)
-            == expected_list_params)
-    assert (parse_resp_data(responses.calls[1].request.body)
-            == expected_remove_params)
+    list_params = parse_resp_data(responses.calls[0].request.body)
+    assert list_params == expected_list_params
+
+    remove_params = parse_resp_data(responses.calls[1].request.body)
+    assert remove_params == expected_remove_params
+
     assert responses.calls[1].response.json()['status']['code'] == '1'
 
 
@@ -200,12 +214,14 @@ def test_del_txt_record(dnspod):
 def test_del_txt_record_failed(dnspod):
     '''It won't raise any exception when API returns error'''
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.List',
+        responses.POST,
+        'https://dnsapi.cn/Record.List',
         json=list_record_result(RECORD_ID, RECORD_VALUE)
     )
 
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.Remove',
+        responses.POST,
+        'https://dnsapi.cn/Record.Remove',
         json={'status': {
             'code': '21',
             'message': 'Domain is locked.'
@@ -226,10 +242,13 @@ def test_del_txt_record_failed(dnspod):
     })
 
     assert len(responses.calls) == 2
-    assert (parse_resp_data(responses.calls[0].request.body)
-            == expected_list_params)
-    assert (parse_resp_data(responses.calls[1].request.body)
-            == expected_remove_params)
+
+    list_params = parse_resp_data(responses.calls[0].request.body)
+    assert list_params == expected_list_params
+
+    remove_params = parse_resp_data(responses.calls[1].request.body)
+    assert remove_params == expected_remove_params
+
     assert responses.calls[1].response.json()['status']['code'] == '21'
 
 
@@ -237,7 +256,8 @@ def test_del_txt_record_failed(dnspod):
 def test_get_record_info_failed(dnspod):
     ERR_MSG = 'Domain not exists'
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.List',
+        responses.POST,
+        'https://dnsapi.cn/Record.List',
         json={
             'status': {
                 'code': '13',
@@ -256,7 +276,8 @@ def test_get_record_info_failed(dnspod):
 @responses.activate
 def test_http_status_error(dnspod):
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.List',
+        responses.POST,
+        'https://dnsapi.cn/Record.List',
         body='Internal server error.',
         status=500
     )
@@ -268,7 +289,8 @@ def test_http_status_error(dnspod):
 @responses.activate
 def test_http_request_failed(dnspod):
     responses.add(
-        responses.POST, 'https://dnsapi.cn/Record.List',
+        responses.POST,
+        'https://dnsapi.cn/Record.List',
         body=requests.exceptions.ConnectionError('Connection error.')
     )
 
